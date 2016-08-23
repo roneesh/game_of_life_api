@@ -1,0 +1,22 @@
+{
+  "name": "game_of_life",
+  "version": "1.0.0",
+  "description": "a game of life api, you send it one generation, it returns the next",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "keywords": [
+    "conway",
+    "api"
+  ],
+  "author": "Roneesh Vashisht",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0"
+  },
+  "devDependencies": {
+    "http-server": "^0.9.0",
+    "nodemon": "^1.10.2"
+  }
+}

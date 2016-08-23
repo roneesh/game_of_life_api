@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Ronway's Game of Life</title>
+        <meta name="description" content="This is an implementation of Conway's Game of Life.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script 
+            src="https://code.jquery.com/jquery-3.1.0.min.js" 
+            integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="
+            crossorigin="anonymous">
+        </script>
+        <style>
+            .inputs {
+                margin: 10px 0;
+                width: 400px;
+                border: 1px dashed #999;
+                padding: 2px;
+            }
+            input {
+                width: 30px;
+            }
+            div {
+                margin: 10px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <h1> Conway's Game of Life!</h1>
+        <div>
+            <p class="next-cells"></p>
+            <p class="error-message"></p>
+            <button onclick="getNextGeneration()">
+                Get Next Generation!
+            </button>
+
+            <div class="inputs">
+                <p>
+                    Cells died out or stuck? 
+                    <em>Get some new random ones!</em>
+                </p>
+                <div>
+                    <label for="rows">
+                        Rows: 
+                    </label>
+                    <input id="rows" type="text" name="rows" placeholder="rows" value="5" />
+                </div>
+                <div>
+                    <label for="cols">
+                        Columns: 
+                    </label>
+                    <input id="cols" type="text" name="cols" placeholder="cols" value="5" />
+                </div>
+                <div>
+                    <label for="points">
+                        Number of new random cells: 
+                    </label>
+                    <input id="points" type="text" name="points" placeholder="# of cells" value="3" />
+                </div>
+                <button onclick="getNewPoints()">
+                    Start with new random points
+                </button>
+            </div>            
+        </div>
+
+        <script type="text/javascript">
+            window.M = 5,
+            window.N = 5,
+            window.points = 3,
+            window.liveCells = [ [2,1],[2,2],[2,3] ];
+
+            writeStartingText();
+
+            function writeStartingText() {
+                startingText = 'Your starting cells are: ';
+                window.liveCells.forEach(function(cell) {
+                    var y = cell[0],
+                        x = cell[1]
+                    startingText += '[' + y + ',' + x + '] ';
+                });
+                $('.next-cells').text(startingText);
+            }
+
+            function getNextGeneration() {
+                if (window.liveCells.length === 0) {
+                    return;
+                }
+
+                var data = {
+                    'M': window.M,
+                    'N': window.N,
+                    'liveCells' : window.liveCells
+                };
+
+                $.ajax({
+                    url: 'http://localhost:3000/',
+                    jsonp: 'callback',
+                    dataType: 'jsonp',
+                    data: data,
+                    success: function(response) {
+                        drawGeneration(response);
+                    },
+                    error: function(response) {
+                        drawError(response);
+                    }
+                });
+            }
+
+            function drawGeneration(response) {
+                if (response.status === 'success') {
+                    if (response.data.length > 0) {
+                        var responseText = 'The next living cells are: ';
+                        response.data.forEach(function(cell) {
+                            responseText += ' [' + cell[0] + ',' + cell[1] + '] ';
+                        })
+                    } else {
+                        responseText = 'The cells have died out.'
+                    }
+                    window.liveCells = response.data;
+                    $('.next-cells').text(responseText);
+                    $('.error-message').text('');
+                } else if (response.status === 'error') {
+                    $('.next-cells').text('');
+                    $('.error-message').text(response.data);
+                }
+            }
+
+            function drawError(response) {
+                $('.next-cells').text('');
+                $('.error-message').text('There was an error in sending the request');
+            }
+
+            function getNewPoints() {
+                window.M = parseInt($('#rows').val(), 10);
+                window.N = parseInt($('#cols').val(), 10);
+                window.liveCells = [];
+                var points = parseInt($('#points').val(), 10);
+
+                for (var i = 0; i < points; i++) {
+                    window.liveCells.push([
+                        Math.floor(Math.random()* window.M),
+                        Math.floor(Math.random()* window.N)
+                    ]);
+                }
+                writeStartingText();
+            }
+        </script>
+    </body>
+</html>
