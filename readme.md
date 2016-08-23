@@ -1,6 +1,6 @@
 # Conway's Game Of Life
 
-## How To The API
+## How To Run The API
 1. Run `npm install`
 2. To start the API run `npm start`, it will start a server on port 3000. 
 3. You can open the index.html file in your browser, or you can run it on a separate server via `http-server ./` in a new terminal window and it will start a server on port 8080.
