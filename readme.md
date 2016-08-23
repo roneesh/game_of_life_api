@@ -5,15 +5,18 @@
 2. To start the API run `npm start`, it will start a server on port 3000. 
 3. You can open the index.html file in your browser, or you can run it on a separate server via `http-server ./` in a new terminal window and it will start a server on port 8080.
 
-## My First Iteration
+## What Libraries Are Used
+I used Express.js to run the API, and I used jQuery on the client side to do a simple UI. The Game of Life implementation is plain JavaScript. I used a prototype system to mimic classes. My thinking is that somewhere down the line, we might want to create more functions to do further studies on each instance of a Game of Life.
 
-In my first iteration I just did a brute force check of the entire board, after which I quickly realized that it would run 8 * M * N calculations for each iteration, most of which are duplicated and some of which are out of bounds. So I decided to find a better solution.
+## First Implementation
 
-## Second Iteration
+In my first implementation I just did a brute force check of the entire board, after which I quickly realized that it would run 8 * M * N calculations for each implementation, most of which are duplicated and some of which are out of bounds. So I decided to find a better solution.
 
-In my second iteration I tried boxing in the points on the board, and only checking those squares in between. However I noticed when I was running my first iteration that it's common that you get boards where the corners have living nodes and everything in the middle is dead. In those cases, I would be checking the entire board anyways. So I decided to move on to what ended up being my third and final implementation.
+## Second Implementation
 
-## What I Implemented
+In my second implementation I tried boxing in the points on the board, and only checking those squares in between. However I noticed when I was running my first implementation that it's common that you get boards where the corners have living nodes and everything in the middle is dead. In those cases, I would be checking the entire board anyways. So I decided to move on to what ended up being my third and final implementation.
+
+## Final Implementation
 
 This is the code that's in `model/gameOfLife.js`. I ended up creating a dictionary of every point in my living cells, initialized to 0, and then adding the 8 points around them (only if they were in bounds, to avoid unncessary checks) to my dictionary with an initial value of 1. We only care to study the living points and the points around them that could potentially come alive, so this approach will make sure we study only the points of interest to us. If we re-encounter a space, increment it's value. Once we've went through all our living points, look through the dictionary for those points who's values would keep it alive, or turn it alive, and those points will be in our API response. 
 
