@@ -14,7 +14,7 @@ var dict = {},
 			lowerX,
 			upperX;
 
-		// if a y or x value of a points is out of bounds, skip this point
+		// if a y or x value of a point is invalid or out of bounds, skip this point
 		if (!y || !x || y < 0 || x < 0 || y > rows - 1 || x > cols - 1)  {
 			return;
 		}
@@ -23,16 +23,21 @@ var dict = {},
 			return;
 		}
 
+		// set up the value in the dictionary and livingReference, being careful to not overwrite existing values
 		dict[y] = dict[y] || {};
 		livingReference[y] = livingReference[y] || {};
 		livingReference[y][x] = true;
 		dict[y][x] = dict[y][x] ? dict[y][x] : 0;
 
+		// these variables will help us avoid checking points out of bounds
 		lowerY = y - 1 >= 0,
 		upperY = y + 1 < rows,
 		lowerX = x - 1 >= 0,
 		upperX = x + 1 < cols;
 
+		// These if statements check hte points surrounding the living Node
+		// If they have not been logged in the dictionary yet, set them to 1 (i.e. has 1 living neighbor)
+		// If they were already logged, increment their value
 		if (lowerY) {
 			dict[y-1] = dict[y-1] || {};
 			dict[y-1][x] = dict[y-1][x] + 1 || 1;
@@ -61,6 +66,7 @@ var dict = {},
 		}
 	});
 
+	// once we have the dictionary, go through every item in it and find the nodes that will come alive
 	for (var i in dict) {
 		for (var j in dict[i]) {
 			if (dict[i][j] === 3 || dict[i][j] === 2 && livingReference[i] && livingReference[i][j]) {
